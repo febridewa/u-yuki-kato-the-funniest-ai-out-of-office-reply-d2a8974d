@@ -31,8 +31,13 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     # Write exactly the reply, no trailing newline, so the byte count
     # stays 132 and the gate sees exactly the judged text.
-    (out_dir / "entry.txt").write_text(REPLY, encoding="utf-8")
-    print(f"Wrote {len(REPLY)}-character reply to {out_dir / 'entry.txt'}")
+    target = out_dir / "entry.txt"
+    target.write_text(REPLY, encoding="utf-8")
+    # Round-trip check: what the grader will read must be exactly REPLY.
+    written = target.read_text(encoding="utf-8")
+    assert written == REPLY, "round-trip mismatch in entry.txt"
+    assert 1 <= len(written) <= 160
+    print(f"Wrote {len(REPLY)}-character reply to {target}")
 
 
 if __name__ == "__main__":
